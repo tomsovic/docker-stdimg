@@ -1,0 +1,14 @@
+version: '2'
+services:
+  cadvisor:
+    build: .
+    restart: always
+    container_name: cadvisor
+    ports:
+      - "18080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
