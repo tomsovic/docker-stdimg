@@ -1,0 +1,30 @@
+version: '2'
+services:
+  zabbix-db:
+    image: monitoringartist/zabbix-db-mariadb
+    restart: always
+    container_name: mysql
+    volumes:
+      - /app/bin/zabbix/mysql:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - MARIADB_USER=zabbix
+      - MARIADB_PASS=123456
+  zabbix-server:
+    image: monitoringartist/zabbix-xxl:latest
+    restart: always
+    container_name: zabbix-server
+    depends_on:
+      - zabbix-db
+    ports:
+      - "8000:80"
+      - "10051:10051"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /app/bin/zabbix/alertscripts:/usr/local/share/zabbix/alert
+    links:
+      - zabbix-db:zabbix.db
+    environment:
+      - ZS_DBHost=zabbix.db
+      - ZS_DBUser=zabbix
+      - ZS_DBPassword=123456
